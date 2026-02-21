@@ -14,7 +14,11 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- [중요] Netlify Snippet Injection 설정에 의해 배포 시점에 window.BIBLE_APP_CONFIG 객체가 여기에 자동으로 주입됩니다. -->
-
+    <script>
+    window.BIBLE_APP_CONFIG = {
+    API_KEY: "{{env:GOOGLE_API_KEY}}"
+  };
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
         body { font-family: 'Noto Sans KR', sans-serif; -webkit-tap-highlight-color: transparent; word-break: keep-all; }

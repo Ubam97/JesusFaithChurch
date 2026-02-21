@@ -1,3 +1,3 @@
 window.BIBLE_APP_CONFIG = {
-    API_KEY: "AIzaSyB3Cg6Araqzj91g3XOaHJQN7xPNsB8vdwA"
+    API_KEY: ""
 };

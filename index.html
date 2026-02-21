@@ -13,14 +13,13 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- 보안 설정: 외부 config.js 파일 불러오기 -->
-    <script src="config.js"></script>
+    <!-- [중요] Netlify Snippet Injection 설정에 의해 배포 시점에 window.BIBLE_APP_CONFIG 객체가 여기에 자동으로 주입됩니다. -->
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
         body { font-family: 'Noto Sans KR', sans-serif; -webkit-tap-highlight-color: transparent; word-break: keep-all; }
-        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .spinner {
             border: 4px solid rgba(79, 70, 229, 0.1);
             width: 48px;
@@ -49,7 +48,7 @@
             return <i data-lucide={name} className={className}></i>;
         };
 
-        // config.js로부터 API 키 획득
+        // Netlify Snippet Injection으로부터 API 키 획득
         const getApiKey = () => {
             return window.BIBLE_APP_CONFIG?.API_KEY || "";
         };
@@ -63,152 +62,24 @@
             </svg>
         );
 
-        // AI 이미지 생성을 위한 고퀄리티 디즈니/픽사 스타일 프롬프트
+        // 고화질 3D 디즈니/픽사 스타일 캐릭터 프롬프트 설정
         const heroData = {
-            'ISTJ': { 
-                name: '모세', 
-                title: '철저한 신념의 인도자', 
-                persona: '교회의 브레인 행정관', 
-                job: '회계사, 공무원, 프로젝트 매니저', 
-                behavior: '계획과 약속을 목숨처럼 지키며, 맡은 사명은 끝까지 완수하는 책임감의 표본', 
-                verse: '너희는 가만히 있어 여호와께서 오늘 너희를 위하여 행하시는 구원을 보라 (출 14:13)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Moses, a wise elderly man with kind eyes and a long flowing white beard, holding a majestic wooden staff and stone tablets, wearing rich textured ancient biblical robes, cinematic lighting, Red Sea background, highly detailed 3D render, masterpiece." 
-            },
-            'ISFJ': { 
-                name: '룻', 
-                title: '신실하고 따뜻한 조력자', 
-                persona: '교회의 힐링 멘토', 
-                job: '간호사, 사회복지사, 선생님', 
-                behavior: '겸손하고 인내심이 강하며, 주변 사람들의 필요를 조용히 채워주는 든든한 서포터', 
-                verse: '어머니께서 가시는 곳에 나도 가고 어머니께서 머무시는 곳에서 나도 머물겠나이다 (룻 1:16)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Ruth, a young woman with a loyal and gentle smile, beautiful expressive eyes, holding a bundle of golden grain, wearing a simple yet elegant humble dress, warm golden hour sunset lighting, wheat field background, cinematic 3D render." 
-            },
-            'INFJ': { 
-                name: '예레미야', 
-                title: '통찰력 있는 중보자', 
-                persona: '신비로운 고민 상담가', 
-                job: '상담가, 작가, 예술가', 
-                behavior: '세상을 향한 깊은 공감 능력을 가졌으며, 보이지 않는 가치와 영혼을 소중히 여기는 중보기도자', 
-                verse: '나의 마음이 불붙는 것 같아서 답답하여 견딜 수 없나이다 (렘 20:9)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Jeremiah the prophet, deep pensive and compassionate expression, large emotive eyes, wearing a simple linen cloak, atmospheric twilight lighting, emotional cinematic 3D render, 8k resolution." 
-            },
-            'INTJ': { 
-                name: '다니엘', 
-                title: '단단한 믿음의 지략가', 
-                persona: '스마트한 청년 리더', 
-                job: '연구원, 데이터 분석가, 기획자', 
-                behavior: '지적 호기심이 많고 독립적이며, 어떤 유혹 앞에서도 자신의 원칙을 굽히지 않는 지혜자', 
-                verse: '다니엘이 뜻을 정하여 왕의 음식으로 자기를 더럽히지 아니하리라 (단 1:8)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Daniel, an intelligent handsome young man with a determined face, holding a golden scroll, wearing ancient royal Babylonian robes, brave and wise expression, cinematic lighting, palace interior." 
-            },
-            'ISTP': { 
-                name: '기드온', 
-                title: '실천적인 해결사', 
-                persona: '교회의 츤데레 맥가이버', 
-                job: '기술자, 개발자, 파일럿', 
-                behavior: '과묵해 보이지만 위기의 순간 가장 효율적인 해결책을 찾아내는 행동파 능력자', 
-                verse: '큰 용사여 여호와께서 너와 함께 계시도다 (삿 6:12)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Gideon, a brave young warrior, holding a trumpet and a torch, wearing detailed ancient light leather armor, dynamic action pose, cinematic midnight lighting with warm fire glow, highly detailed 3D render." 
-            },
-            'ISFP': { 
-                name: '마리아', 
-                title: '순수한 예술 예배자', 
-                persona: '감성 충만 성가대 누나', 
-                job: '디자이너, 화가, 음악가', 
-                behavior: '온유하고 수용적인 성격으로 자신의 진심을 담아 가장 가치 있는 것을 아낌없이 헌신함', 
-                verse: '주의 여종이오니 말씀대로 내게 이루어지이다 (눅 1:38)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Mary, a young woman with a radiant and peaceful smile, soft ethereal glow, large gentle eyes, simple historical dress, divine morning atmosphere, warm cinematic lighting, 3D render." 
-            },
-            'INFP': { 
-                name: '사도요한', 
-                title: '사랑의 낭만주의자', 
-                persona: '평화로운 교회 오빠', 
-                job: '크리에이터, 작가, 활동가', 
-                behavior: '내면 세계가 따뜻하고 풍부하며, 모든 사람이 사랑으로 하나 되길 꿈꾸는 평화주의자', 
-                verse: '사랑하는 자들아 우리가 서로 사랑하자 사랑은 하나님께 속한 것이니 (요일 4:7)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Apostle John, a gentle young man looking at a white bird with love, serene lake and mountain background, magical soft lighting, pensive but joyful face, cinematic 3D render." 
-            },
-            'INTP': { 
-                name: '솔로몬', 
-                title: '지혜로운 탐구자', 
-                persona: '걸어다니는 교회 백과사전', 
-                job: '학자, 철학자, 전략 컨설턴트', 
-                behavior: '아이디어가 끊이지 않으며, 복잡한 세상을 자신만의 논리로 명쾌하게 정리하는 지혜자', 
-                verse: '여호와를 경외하는 것이 지식의 근본이어늘 (잠 1:7)', 
-                prompt: "Full body 3D Disney Pixar movie style character of King Solomon, wearing a magnificent golden crown, wise and curious eyes, surrounded by ancient scrolls and treasures, rich royal colors, cinematic interior lighting, 8k resolution." 
-            },
-            'ESTP': { 
-                name: '삼손', 
-                title: '에너지 넘치는 액션스타', 
-                persona: '활동적인 청년부 에이스', 
-                job: '운동선수, 영업직, 소방관', 
-                behavior: '두려움 없는 도전 정신과 넘치는 자신감으로 현장을 누비는 역동적인 주인공', 
-                verse: '주 여호와여 구옵나니 나를 생각하옵소서... 이번만 나를 강하게 하사 (삿 16:28)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Samson, extremely strong muscular man, heroic pose, long flowing hair, energetic facial expression, cinematic action lighting, vibrant colors, epic 3D render." 
-            },
-            'ESFP': { 
-                name: '다윗', 
-                title: '기쁨의 찬양가', 
-                persona: '교회 최고의 스타 플레이어', 
-                job: '연예인, 마케터, 레크리에이션 강사', 
-                behavior: '낙천적이고 사교적이며, 주변을 즐겁게 만드는 탁월한 재능과 예술성을 겸비함', 
-                verse: '다윗이 여호와 앞에서 힘을 다하여 춤을 추는데 (삼하 6:14)', 
-                prompt: "Full body 3D Disney Pixar movie style character of young shepherd David, playing a beautiful golden harp, joyful expression, curly hair, sunny shepherd hill background, cinematic lighting, 3D render, highly expressive." 
-            },
-            'ENFP': { 
-                name: '베드로', 
-                title: '열정적인 선구자', 
-                persona: '분위기 메이커 전도 대장', 
-                job: 'PD, 가이드, 자유 기고자', 
-                behavior: '풍부한 감수성과 열정을 가졌으며 새로운 일에 뛰어드는 것을 두려워하지 않는 개척자', 
-                verse: '주는 그리스도시요 살아 계신 하나님의 아들이시니이다 (마 16:16)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Peter the Apostle, energetic and bold expression, wearing simple fisherman clothes, stormy sea and boat background, bright and inspiring mood, cinematic 3D render." 
-            },
-            'ENTP': { 
-                name: '야곱', 
-                title: '영리한 아이디어 뱅크', 
-                persona: '재치 만점 교회 청년', 
-                job: '발명가, 기획자, 변호사', 
-                behavior: '임기응변이 뛰어나고 기발한 방식으로 난관을 극복하는 전략가', 
-                verse: '내게 축복하지 아니하면 가게 하지 아니하겠나이다 (창 32:26)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Jacob, clever and witty facial expression, adventurous traveler gear, holding a staff, starry night ladder dream background, magical cinematic lighting, 3D render." 
-            },
-            'ESTJ': { 
-                name: '여호수아', 
-                title: '강인한 실행 리더', 
-                persona: '든든한 청년부 회장님', 
-                job: '경영자, 경찰, 군인', 
-                behavior: '질서와 규칙을 중요시하며, 목표를 향해 조직을 체계적으로 이끄는 카리스마 소유자', 
-                verse: '강하고 담대하라 두려워하지 말며 놀라지 말라 (수 1:9)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Joshua the commander, strong leader stance, epic sunset lighting, leading a biblical army, heroic face, highly detailed ancient armor, 3D render." 
-            },
-            'ESFJ': { 
-                name: '마르다', 
-                title: '친절한 수호자', 
-                persona: '다정다감한 교회 언니', 
-                job: '호텔리어, 서비스 매니저, 교사', 
-                behavior: '사람들을 섬기는 것에 기쁨을 느끼며, 공동체의 화합을 위해 늘 솔선수범함', 
-                verse: '마르다는 준비하는 일이 많아 마음이 분주한지라 (눅 10:40)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Martha, friendly and caring smile, wearing a neat detailed apron, ancient cozy kitchen interior, warm inviting lighting, cinematic 3D render." 
-            },
-            'ENFJ': { 
-                name: '요셉', 
-                title: '비전 있는 중재자', 
-                persona: '차세대 글로벌 리더', 
-                job: '외교관, 인사관리자, 팀장', 
-                behavior: '공동체의 미래를 내다보는 통찰력이 있으며, 따뜻한 리더십으로 사람을 모음', 
-                verse: '하나님은 그것을 선으로 바꾸사 오늘과 같이 많은 백성의 생명을 구원하게 (창 50:20)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Joseph wearing a magnificent colorful royal coat, noble posture, kind visionary eyes, ancient Egypt palace background, cinematic lighting, 8k resolution." 
-            },
-            'ENTJ': { 
-                name: '사도바울', 
-                title: '담대한 전략 리더', 
-                persona: '프런티어 선교 열정가', 
-                job: 'CEO, 정치 지도자, 법률가', 
-                behavior: '단호하고 추진력이 강하며, 비전을 현실로 만들기 위해 자신의 모든 것을 던지는 사명자', 
-                verse: '나의 달려갈 길과 주 예수께 받은 사명을 마치려 함에는... (행 20:24)', 
-                prompt: "Full body 3D Disney Pixar movie style character of Apostle Paul, focused and authoritative look, traveler gear and scrolls, dramatic cinematic lighting, heroic pose, 3D render, highly detailed textures." 
-            }
+            'ISTJ': { name: '모세', title: '철저한 신념의 인도자', persona: '교회의 브레인 행정관', job: '회계사, 공무원, 관리직', behavior: '계획과 원칙을 철저히 지키며 사명을 끝까지 완수하는 책임감의 표본', verse: '너희는 가만히 있어 여호와께서 오늘 너희를 위하여 행하시는 구원을 보라 (출 14:13)', prompt: "Full body 3D Disney Pixar style character of Moses, a wise elderly man with kind eyes and a long flowing white beard, holding a wooden staff and stone tablets, ancient biblical robes, cinematic lighting, vibrant 3D render, masterpiece." },
+            'ISFJ': { name: '룻', title: '신실하고 따뜻한 조력자', persona: '교회의 힐링 멘토', job: '간호사, 사회복지사, 선생님', behavior: '겸손하고 인내심이 강하며, 주변 사람들의 필요를 조용히 채워주는 든든한 서포터', verse: '어머니께서 가시는 곳에 나도 가고 어머니께서 머무시는 곳에서 나도 머물겠나이다 (룻 1:16)', prompt: "Full body 3D Disney Pixar style character of Ruth, a young woman with a loyal and gentle smile, holding a bundle of golden grain, humble dress, warm golden hour lighting, cinematic 3D render." },
+            'INFJ': { name: '예레미야', title: '통찰력 있는 중보자', persona: '신비로운 고민 상담가', job: '상담가, 작가, 예술가', behavior: '세상을 향한 깊은 공감 능력을 가졌으며, 보이지 않는 가치와 영혼을 소중히 여기는 중보기도자', verse: '나의 마음이 불붙는 것 같아서 답답하여 견딜 수 없나이다 (렘 20:9)', prompt: "Full body 3D Disney Pixar style character of Jeremiah the prophet, deep pensive expression, large emotive eyes, wearing a simple linen cloak, atmospheric twilight lighting, emotional cinematic render." },
+            'INTJ': { name: '다니엘', title: '단단한 믿음의 지략가', persona: '스마트한 청년 리더', job: '연구원, 데이터 분석가, 기획자', behavior: '지적 호기심이 많고 독립적이며, 어떤 유혹 앞에서도 자신의 원칙을 굽히지 않는 지혜자', verse: '다니엘이 뜻을 정하여 왕의 음식으로 자기를 더럽히지 아니하리라 (단 1:8)', prompt: "Full body 3D Disney Pixar style character of Daniel, intelligent handsome young man, holding a golden scroll, ancient royal Babylonian robes, brave and wise expression, cinematic lighting." },
+            'ISTP': { name: '기드온', title: '실천적인 해결사', persona: '교회의 츤데레 맥가이버', job: '기술자, 개발자, 파일럿', behavior: '과묵해 보이지만 위기의 순간 가장 효율적인 해결책을 찾아내는 행동파 능력자', verse: '큰 용사여 여호와께서 너와 함께 계시도다 (삿 6:12)', prompt: "Full body 3D Disney Pixar style character of Gideon, brave warrior, holding a trumpet and a torch, detailed ancient light armor, dynamic action pose, cinematic midnight lighting." },
+            'ISFP': { name: '마리아', title: '순수한 예술 예배자', persona: '감성 충만 성가대 누나', job: '디자이너, 화가, 음악가', behavior: '온유하고 수용적인 성격으로 자신의 진심을 담아 가장 가치 있는 것을 아낌없이 헌신함', verse: '주의 여종이오니 말씀대로 내게 이루어지이다 (눅 1:38)', prompt: "Full body 3D Disney Pixar style character of Mary, radiant young woman with a peaceful smile, soft ethereal glow, large gentle eyes, simple historical dress, divine atmosphere, 3D render." },
+            'INFP': { name: '사도요한', title: '사랑의 낭만주의자', persona: '평화로운 교회 오빠', job: '크리에이터, 작가, 활동가', behavior: '내면 세계가 따뜻하고 풍부하며, 모든 사람이 사랑으로 하나 되길 꿈꾸는 평화주의자', verse: '사랑하는 자들아 우리가 서로 사랑하자 사랑은 하나님께 속한 것이니 (요일 4:7)', prompt: "Full body 3D Disney Pixar style character of Apostle John, gentle young man looking at a white dove with love, serene lake background, magical soft lighting, cinematic render." },
+            'INTP': { name: '솔로몬', title: '지혜로운 탐구자', persona: '걸어다니는 교회 백과사전', job: '학자, 철학자, 전략 컨설턴트', behavior: '아이디어가 끊이지 않으며, 복잡한 세상을 자신만의 논리로 명쾌하게 정리하는 지혜자', verse: '여호와를 경외하는 것이 지식의 근본이어늘 (잠 1:7)', prompt: "Full body 3D Disney Pixar style character of King Solomon, wearing a golden crown, wise and curious eyes, ancient library interior, rich royal colors, 3D render." },
+            'ESTP': { name: '삼손', title: '에너지 넘치는 액션스타', persona: '활동적인 청년부 에이스', job: '운동선수, 영업직, 소방관', behavior: '두려움 없는 도전 정신과 넘치는 자신감으로 현장을 누비는 역동적인 주인공', verse: '주 여호와여 구옵나니 나를 생각하옵소서... (삿 16:28)', prompt: "Full body 3D Disney Pixar style character of Samson, extremely strong muscular man, heroic pose, long flowing hair, energetic facial expression, cinematic action lighting." },
+            'ESFP': { name: '다윗', title: '기쁨의 찬양가', persona: '교회 최고의 스타 플레이어', job: '연예인, 마케터, 레크리에이션 강사', behavior: '낙천적이고 사교적이며, 주변을 즐겁게 만드는 탁월한 재능과 예술성을 겸비함', verse: '다윗이 여호와 앞에서 힘을 다하여 춤을 추는데 (삼하 6:14)', prompt: "Full body 3D Disney Pixar style character of young David, playing a golden harp, joyful expression, curly hair, sunny shepherd hill background, 3D render." },
+            'ENFP': { name: '베드로', title: '열정적인 선구자', persona: '분위기 메이커 전도 대장', job: 'PD, 가이드, 자유 기고자', behavior: '풍부한 감수성과 열정을 가졌으며 새로운 일에 뛰어드는 것을 두려워하지 않는 개척자', verse: '주는 그리스도시요 살아 계신 하나님의 아들이시니이다 (마 16:16)', prompt: "Full body 3D Disney Pixar style character of Peter the Apostle, energetic and bold expression, fisherman clothes, stormy sea and boat background, bright and inspiring mood." },
+            'ENTP': { name: '야곱', title: '영리한 아이디어 뱅크', persona: '재치 만점 교회 청년', job: '발명가, 기획자, 변호사', behavior: '임기응변이 뛰어나고 기발한 방식으로 난관을 극복하는 전략가', verse: '내게 축복하지 아니하면 가게 하지 아니하겠나이다 (창 32:26)', prompt: "Full body 3D Disney Pixar style character of Jacob, clever and witty facial expression, adventurous traveler gear, holding a staff, starry night ladder dream background." },
+            'ESTJ': { name: '여호수아', title: '강인한 실행 리더', persona: '든든한 청년부 회장님', job: '경영자, 경찰, 군인', behavior: '질서와 규칙을 중요시하며, 목표를 향해 조직을 체계적으로 이끄는 카리스마 소유자', verse: '강하고 담대하라 두려워하지 말며 놀라지 말라 (수 1:9)', prompt: "Full body 3D Disney Pixar style character of Joshua the commander, strong leader stance, epic sunset lighting, leading an army, heroic face, 3D render." },
+            'ESFJ': { name: '마르다', title: '친절한 수호자', persona: '다정다감한 교회 언니', job: '호텔리어, 서비스 매니저, 교사', behavior: '사람들을 섬기는 것에 기쁨을 느끼며, 공동체의 화합을 위해 늘 솔선수범함', verse: '마르다는 준비하는 일이 많아 마음이 분주한지라 (눅 10:40)', prompt: "Full body 3D Disney Pixar style character of Martha, friendly and caring smile, neat apron, ancient cozy kitchen interior, warm inviting lighting, 3D render." },
+            'ENFJ': { name: '요셉', title: '비전 있는 중재자', persona: '차세대 글로벌 리더', job: '외교관, 인사관리자, 팀장', behavior: '공동체의 미래를 내다보는 통찰력이 있으며, 따뜻한 리더십으로 사람을 모음', verse: '하나님은 그것을 선으로 바꾸사 오늘과 같이 많은 백성의 생명을 구원하게 (창 50:20)', prompt: "Full body 3D Disney Pixar style character of Joseph wearing a magnificent colorful royal coat, noble posture, kind visionary eyes, ancient Egypt background." },
+            'ENTJ': { name: '사도바울', title: '담대한 전략 리더', persona: '프런티어 선교 열정가', job: 'CEO, 정치 지도자, 법률가', behavior: '단호하고 추진력이 강하며, 비전을 현실로 만들기 위해 자신의 모든 것을 던지는 사명자', verse: '나의 달려갈 길과 주 예수께 받은 사명을 마치려 함에는... (행 20:24)', prompt: "Full body 3D Disney Pixar style character of Apostle Paul, focused and authoritative look, traveler gear and scrolls, dramatic cinematic lighting, heroic pose, 3D render." }
         };
 
         const questions = [
@@ -248,6 +119,7 @@
                 if (window.lucide) window.lucide.createIcons();
             }, [step, currentIdx]);
 
+            // 답변 합산 로직 (버그 해결: 마지막 답변이 즉시 결과에 반영됨)
             const handleAnswer = (type, val) => {
                 const trait = (val === 1 ? type[0] : type[1]);
                 const nextAnswers = { ...answers, [trait]: answers[trait] + 1 };
@@ -298,13 +170,12 @@
                         });
                         
                         const data = await response.json();
-                        // API 응답 구조에 따라 데이터를 추출합니다 (base64 이미지 데이터)
                         if (data.predictions?.[0]?.bytesBase64Encoded) {
                             setResultImg(`data:image/png;base64,${data.predictions[0].bytesBase64Encoded}`);
                             setIsGenerating(false);
                             return;
                         }
-                        throw new Error("No image in response");
+                        throw new Error("No image");
                     } catch (e) {
                         retryCount++;
                         await new Promise(r => setTimeout(r, 1500));
@@ -352,7 +223,7 @@
                                 </div>
                                 <div className="space-y-4 px-4 text-center">
                                     <h2 className="text-4xl font-black text-slate-900 leading-tight">나와 닮은<br /><span className="text-indigo-600">성경 히어로</span> 찾기</h2>
-                                    <p className="text-slate-500 text-sm font-bold leading-relaxed px-2">3D 디즈니 스타일로 만나는 나의 신앙 캐릭터!<br />나의 일상으로 알아보는 히어로 테스트</p>
+                                    <p className="text-slate-500 text-sm font-bold leading-relaxed px-2 text-center">디즈니 3D 스타일로 만나는 나의 신앙 캐릭터!<br />나의 일상으로 알아보는 성경 히어로 테스트</p>
                                 </div>
                                 <button onClick={() => setStep('quiz')} className="w-full bg-indigo-600 text-white font-black py-6 rounded-3xl text-xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all">테스트 시작하기</button>
                                 <p className="text-[10px] text-slate-300 font-bold uppercase tracking-[0.3em]">Jesus Faith Church (Hapdong)</p>
@@ -406,9 +277,10 @@
                                                     alt="Character"
                                                 />
                                             ) : (
-                                                <div className="flex flex-col items-center gap-2">
-                                                    <p className="text-[10px] font-bold text-slate-400">API 연동 확인 필요</p>
-                                                    <Icon name="user" className="w-20 h-20 text-slate-300" />
+                                                <div className="flex flex-col items-center gap-2 text-center p-6">
+                                                    <Icon name="user-x" className="w-12 h-12 text-slate-200 mb-2" />
+                                                    <p className="text-[10px] font-bold text-red-500 uppercase tracking-tighter">API Integration Check Required</p>
+                                                    <p className="text-[9px] text-slate-400 leading-tight text-center">Netlify의 환경 변수 및<br/>Snippet Injection 설정을 완료하세요.</p>
                                                 </div>
                                             )}
                                         </div>
@@ -433,14 +305,14 @@
                                                 <p className="text-slate-800 font-black text-[10px] leading-tight break-keep text-center">{heroData[mbti]?.job}</p>
                                             </section>
                                         </div>
-                                        <div className="bg-indigo-900 text-white p-8 rounded-[3.5rem] relative shadow-2xl flex flex-col items-center overflow-hidden">
+                                        <div className="bg-indigo-900 text-white p-8 rounded-[3.5rem] relative shadow-2xl flex flex-col items-center overflow-hidden text-center">
                                             <Icon name="quote" className="w-12 h-12 text-white/10 absolute -top-1 -left-1" />
                                             <p className="text-lg font-bold italic leading-relaxed mb-4 text-center break-keep relative z-10 px-4">"{heroData[mbti]?.verse}"</p>
-                                            <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest italic opacity-60 text-center">A Message for you</p>
+                                            <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest italic opacity-60 text-center uppercase">A Message for you</p>
                                         </div>
                                     </div>
 
-                                    <div className="bg-white border-4 border-slate-900 rounded-[4rem] p-10 space-y-10 shadow-2xl relative overflow-hidden">
+                                    <div className="bg-white border-4 border-slate-900 rounded-[4rem] p-10 space-y-10 shadow-2xl relative overflow-hidden text-center">
                                         <div className="flex items-center gap-3 justify-center">
                                             <HapdongLogo />
                                             <h2 className="text-2xl font-black text-slate-900 tracking-tighter text-center leading-none">예수믿음교회</h2>
@@ -448,7 +320,7 @@
                                         <div className="space-y-8 flex flex-col items-center text-center">
                                             <div className="flex flex-col items-center gap-4">
                                                 <div className="w-12 h-12 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-lg shadow-slate-200"><Icon name="map-pin" className="w-6 h-6 text-white" /></div>
-                                                <div><p className="text-xs font-bold leading-relaxed text-slate-800 text-center px-4">도로명: 경기 용인시 기흥구 마북로154번길 9<br />지번: 경기 용인시 기흥구 마북동 617<br /><span className="opacity-50 font-medium text-xs">(교동마을 LG자이 상가 2층)</span></p></div>
+                                                <div><p className="text-xs font-bold text-slate-800 text-center px-4 leading-relaxed">도로명: 경기 용인시 기흥구 마북로154번길 9<br />지번: 경기 용인시 기흥구 마북동 617<br /><span className="opacity-50 font-medium text-xs">(교동마을 LG자이 상가 2층)</span></p></div>
                                             </div>
                                             <div className="grid grid-cols-1 gap-5 w-full">
                                                 <div className="flex gap-5 items-center justify-center"><Icon name="phone" className="w-5 h-5 text-indigo-600" /><p className="text-sm font-black text-slate-700 tracking-wider text-center">031-258-8291</p></div>
@@ -457,7 +329,7 @@
                                             <a href="https://naver.me/FG79ACXd" target="_blank" className="w-full bg-slate-900 text-white font-black py-5 rounded-[2.5rem] flex items-center justify-center gap-3 shadow-lg hover:bg-indigo-600 transition-all active:scale-95 text-center"><Icon name="navigation-2" className="w-5 h-5 fill-current" /> 교회 길찾기 (네이버 지도)</a>
                                         </div>
                                     </div>
-                                    <div className="space-y-4 pt-4 flex flex-col items-center w-full">
+                                    <div className="space-y-4 pt-4 flex flex-col items-center w-full text-center">
                                         <button onClick={() => {
                                             const el = document.createElement('textarea'); el.value = window.location.href; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); setShowToast(true); setTimeout(() => setShowToast(false), 2000);
                                         }} className="w-full bg-indigo-600 text-white font-black py-6 rounded-[2.5rem] flex items-center justify-center gap-3 shadow-xl transform active:scale-95 transition-all text-lg text-center"><Icon name="share-2" className="w-6 h-6" /> 링크 복사해서 공유하기</button>

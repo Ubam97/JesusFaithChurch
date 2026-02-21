@@ -13,7 +13,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- [중요] 외부 설정 파일 불러오기: config.js 파일이 html과 같은 폴더에 있어야 합니다. -->
+    <!-- [중요] 외부 설정 파일 불러오기: config.js 파일이 index.html과 같은 폴더에 있어야 합니다. -->
     <script src="config.js"></script>
 
     <style>
@@ -40,13 +40,9 @@
             return <i data-lucide={name} className={className}></i>;
         };
 
-        // config.js에서 API 키 획득 로직을 더 견고하게 수정
+        // config.js에서 API 키 획득
         const getApiKey = () => {
-            if (window.BIBLE_APP_CONFIG && window.BIBLE_APP_CONFIG.API_KEY) {
-                return window.BIBLE_APP_CONFIG.API_KEY;
-            }
-            console.error("API Key is missing. Please ensure config.js exists and window.BIBLE_APP_CONFIG.API_KEY is set.");
-            return "";
+            return window.BIBLE_APP_CONFIG?.API_KEY || "";
         };
 
         const HapdongLogo = () => (
@@ -64,17 +60,17 @@
             'INFJ': { name: '예레미야', title: '통찰력 있는 중보자', persona: '신비로운 고민 상담가', job: '상담가, 작가, 예술가', behavior: '세상을 향한 깊은 공감 능력을 가졌으며, 보이지 않는 가치와 본질을 소중히 여김', verse: '나의 마음이 불붙는 것 같아서 답답하여 견딜 수 없나이다 (렘 20:9)', prompt: "A high-quality 3D Disney-Pixar style character of Jeremiah the prophet, deep thoughtful expression, atmospheric twilight lighting.", fallback: '⛪', color: 'bg-indigo-100' },
             'INTJ': { name: '다니엘', title: '단단한 믿음의 지략가', persona: '스마트한 청년 리더', job: '연구원, 전략 기획자, 데이터 분석가', behavior: '지적 호기심이 많고 독립적이며, 어떤 유혹 앞에서도 자신의 원칙을 굽히지 않음', verse: '다니엘이 뜻을 정하여 왕의 음식으로 자기를 더럽히지 아니하리라 (단 1:8)', prompt: "A high-quality 3D Disney-Pixar style character of Daniel, intelligent young man, holding a scroll, ancient palace background, cinematic render.", fallback: '🦁', color: 'bg-slate-200' },
             'ISTP': { name: '기드온', title: '실천적인 해결사', persona: '교회의 츤데레 맥가이버', job: '기술자, 개발자, 파일럿', behavior: '과묵해 보이지만 위기의 순간 가장 효율적인 해결책을 찾아내는 능력자', verse: '큰 용사여 여호와께서 너와 함께 계시도다 (삿 6:12)', prompt: "A high-quality 3D Disney-Pixar style character of Gideon, holding a torch and a trumpet, brave soldier, dynamic lighting.", fallback: '🛡️', color: 'bg-zinc-100' },
-            'ISFP': { name: '마리아', title: '순수한 예술 예배자', persona: '감성 충만 성가대 누나', job: '디자이너, 화가, 음악가', behavior: '온유하고 수용적이며, 자신의 진심을 담아 가장 가치 있는 것을 아낌없이 헌신함', verse: '주의 여종이오니 말씀대로 내게 이루어지이다 (눅 1:38)', prompt: "A high-quality 3D Disney-Pixar style character of Mary, young woman with a peaceful smile, soft glow, divine atmosphere.", fallback: '🎨', color: 'bg-rose-100' },
-            'INFP': { name: '사도요한', title: '사랑의 낭만주의자', persona: '평화로운 교회 오빠', job: '콘텐츠 제작자, 작가, 활동가', behavior: '내면 세계가 따뜻하고 풍부하며, 모든 사람이 사랑으로 하나 되길 꿈꾸는 평화주의자', verse: '사랑하는 자들아 우리가 서로 사랑하자 사랑은 하나님께 속한 것이니 (요일 4:7)', prompt: "A high-quality 3D Disney-Pixar style character of Apostle John, gentle young man looking up at a white bird, serene landscape.", fallback: '🕊️', color: 'bg-cyan-100' },
+            'ISFP': { name: '마리아', title: '순수한 예술 예배자', persona: '감성 충만 성가대 누나', job: '디자이너, 화가, 음악가', behavior: '온유하고 수용적이며, 자신의 진심을 담아 가장 가치 있는 것을 아낌없이 헌신함', verse: '주의 여종이오니 말씀대로 내게 이루어지이다 (눅 1:38)', prompt: "A high-quality 3D Disney-Pixar style character of Mary, young woman with a peaceful smile, soft glow.", fallback: '🎨', color: 'bg-rose-100' },
+            'INFP': { name: '사도요한', title: '사랑의 낭만주의자', persona: '평화로운 교회 오빠', job: '콘텐츠 제작자, 작가, 활동가', behavior: '내면 세계가 따뜻하고 풍부하며, 모든 사람이 사랑으로 하나 되길 꿈꾸는 평화주의자', verse: '사랑하는 자들아 우리가 서로 사랑하자 사랑은 하나님께 속한 것이니 (요일 4:7)', prompt: "A high-quality 3D Disney-Pixar style character of Apostle John, gentle young man looking up, serene landscape.", fallback: '🕊️', color: 'bg-cyan-100' },
             'INTP': { name: '솔로몬', title: '지혜로운 탐구자', persona: '걸어다니는 교회 백과사전', job: '학자, 철학자, 전략 컨설턴트', behavior: '아이디어가 끊이지 않으며, 복잡한 세상을 자신만의 논리로 명쾌하게 정리함', verse: '여호와를 경외하는 것이 지식의 근본이어늘 (잠 1:7)', prompt: "A high-quality 3D Disney-Pixar style character of King Solomon, wearing a golden crown, holding a book, ancient library background.", fallback: '💡', color: 'bg-amber-100' },
-            'ESTP': { name: '삼손', title: '에너지 넘치는 액션스타', persona: '활동적인 청년부 에이스', job: '운동선수, 영업직, 소방관', behavior: '두려움 없는 도전 정신과 넘치는 자신감으로 현장을 누비는 역동적인 스타일', verse: '주 여호와여 구옵나니 나를 생각하옵소서... 이번만 나를 강하게 하사 (삿 16:28)', prompt: "A high-quality 3D Disney-Pixar style character of Samson, very strong muscular man, heroic pose, long hair, powerful lighting.", fallback: '⚔️', color: 'bg-orange-100' },
+            'ESTP': { name: '삼손', title: '에너지 넘치는 액션스타', persona: '활동적인 청년부 에이스', job: '운동선수, 영업직, 소방관', behavior: '두려움 없는 도전 정신과 넘치는 자신감으로 현장을 누비는 역동적인 스타일', verse: '주 여호와여 구옵나니 나를 생각하옵소서... 이번만 나를 강하게 하사 (삿 16:28)', prompt: "A high-quality 3D Disney-Pixar style character of Samson, very strong muscular man, heroic pose, long hair.", fallback: '⚔️', color: 'bg-orange-100' },
             'ESFP': { name: '다윗', title: '기쁨의 찬양가', persona: '교회 최고의 스타 플레이어', job: '연예인, 마케터, 홍보 전문가', behavior: '낙천적이고 사교적이며, 주변을 즐겁게 만드는 탁월한 재능과 예술성을 가짐', verse: '다윗이 여호와 앞에서 힘을 다하여 춤을 추는데 (삼하 6:14)', prompt: "A high-quality 3D Disney-Pixar style character of young shepherd David playing a harp, joyful expression, sunny background.", fallback: '🎸', color: 'bg-yellow-100' },
             'ENFP': { name: '베드로', title: '열정적인 선구자', persona: '분위기 메이커 전도 대장', job: 'PD, 가이드, 자유 기고자', behavior: '풍부한 감수성과 열정을 가졌으며, 새로운 일에 뛰어드는 것을 두려워하지 않는 개척자', verse: '주는 그리스도시요 살아 계신 하나님의 아들이시니이다 (마 16:16)', prompt: "A high-quality 3D Disney-Pixar style character of Peter the Apostle, energetic fisherman, stormy sea background.", fallback: '🔥', color: 'bg-orange-200' },
             'ENTP': { name: '야곱', title: '영리한 아이디어 뱅크', persona: '재치 만점 교회 청년', job: '발명가, 기획자, 변호사', behavior: '임기응변이 뛰어나고 논쟁을 즐기며, 기발한 방식으로 난관을 극복함', verse: '내게 축복하지 아니하면 가게 하지 아니하겠나이다 (창 32:26)', prompt: "A high-quality 3D Disney-Pixar style character of Jacob, clever expression, adventurous gear, starry night dream background.", fallback: '🪜', color: 'bg-pink-100' },
             'ESTJ': { name: '여호수아', title: '강인한 실행 리더', persona: '든든한 청년부 회장님', job: '경영자, 경찰, 군인', behavior: '질서와 규칙을 중요시하며, 목표를 향해 조직을 체계적으로 이끄는 카리스마 리더', verse: '강하고 담대하라 두려워하지 말며 놀라지 말라 (수 1:9)', prompt: "A high-quality 3D Disney-Pixar style character of Joshua the commander, strong leader stance, leading an army background.", fallback: '🚩', color: 'bg-blue-200' },
             'ESFJ': { name: '마르다', title: '친절한 수호자', persona: '다정다감한 교회 언니', job: '호텔리어, 서비스 매니저, 교사', behavior: '사람들을 섬기는 것에 기쁨을 느끼며, 공동체의 화합을 위해 늘 솔선수범함', verse: '마르다는 준비하는 일이 많아 마음이 분주한지라 (눅 10:40)', prompt: "A high-quality 3D Disney-Pixar style character of Martha, friendly and caring smile, neat apron, ancient cozy kitchen interior.", fallback: '🍞', color: 'bg-emerald-200' },
             'ENFJ': { name: '요셉', title: '비전 있는 중재자', persona: '차세대 글로벌 리더', job: '외교관, 인사관리자, 팀장', behavior: '공동체의 미래를 내다보는 통찰력이 있으며, 따뜻한 리더십으로 사람을 모음', verse: '하나님은 그것을 선으로 바꾸사 오늘과 같이 많은 백성의 생명을 구원하게 (창 50:20)', prompt: "A high-quality 3D Disney-Pixar style character of Joseph wearing a colorful royal coat, noble posture, kind eyes.", fallback: '🌈', color: 'bg-green-100' },
-            'ENTJ': { name: '사도바울', title: '담대한 전략 리더', persona: '프런티어 선교 열정가', job: 'CEO, 정치 지도자, 법률가', behavior: '단호하고 추진력이 강하며, 비전을 현실로 만들기 위해 자신의 모든 것을 던지는 사명자', verse: '나의 달려갈 길과 주 예수께 받은 사명을 마치려 함에는... (행 20:24)', prompt: "A high-quality 3D Disney-Pixar style character of Apostle Paul, focused leader look, dramatic cinematic lighting, heroic pose.", fallback: '🚢', color: 'bg-red-100' }
+            'ENTJ': { name: '사도바울', title: '담대한 전략 리더', persona: '프런티어 선교 열정가', job: 'CEO, 정치 지도자, 법률가', behavior: '단호하고 추진력이 강하며, 비전을 현실로 만들기 위해 자신의 모든 것을 던지는 사명자', verse: '나의 달려갈 길과 주 예수께 받은 사명을 마치려 함에는... (행 20:24)', prompt: "A high-quality 3D Pixar-style movie character of Apostle Paul, focused leader look, dramatic cinematic lighting, heroic pose.", fallback: '🚢', color: 'bg-red-100' }
         };
 
         const questions = [
@@ -92,7 +88,7 @@
             { id: 12, type: 'JP', q: "마감 기한이 정해진 일을 할 때?", a1: "미리미리 계획을 세워 여유 있게 끝내는 편이다", a2: "마지막에 집중력을 폭발시켜 한꺼번에 끝내는 편이다" },
             { id: 13, type: 'EI', q: "내가 생각하는 나의 평소 모습은?", a1: "활동적이고 먼저 다가가는 인싸형", a2: "신중하고 차분하게 지켜보는 아싸형" },
             { id: 14, type: 'SN', q: "하늘의 구름을 보면 드는 생각은?", a1: "비가 오려나? 우산을 챙겨야겠다", a2: "강아지 모양 같아! 저 구름은 어디로 갈까?" },
-            { id: 15, type: 'TF', q: "슬픈 영화를 볼 때 나는?", a1: "줄거리의 개연성이나 연출의 완성도를 평가한다", a2: "주인공의 감정에 이입해서 어느새 울고 있다" },
+            { id: 15, type: 'TF', q: "드라마를 볼 때 나는?", a1: "줄거리의 개연성이나 연출의 완성도를 평가한다", a2: "주인공의 감정에 이입해서 어느새 울고 있다" },
             { id: 16, type: 'JP', q: "약속 시간 10분 전, 나는?", a1: "이미 도착했거나 약속 장소 근처에 있다", a2: "이제 막 출발했거나 부지런히 서두르고 있다" },
             { id: 17, type: 'EI', q: "나의 감정 표현은?", a1: "솔직하고 풍부하게 밖으로 잘 드러낸다", a2: "내면에서 정리하고 겉으로는 잘 드러내지 않는다" },
             { id: 18, type: 'SN', q: "미래에 대해 생각할 때?", a1: "당장 내일이나 이번 달의 구체적인 계획이 즐겁다", a2: "먼 미래의 꿈이나 막연한 비전 상상이 즐겁다" },
@@ -114,10 +110,10 @@
                 if (window.lucide) window.lucide.createIcons();
             }, [step, currentIdx]);
 
-            // 답변 처리 로직 수정: 마지막 답변까지 즉시 반영하도록 개선
+            // 답변 시 실시간 점수 반영 및 마지막 질문 처리 로직
             const handleAnswer = (type, val) => {
                 const t1 = type[0], t2 = type[1];
-                const selected = val === 1 ? t1 : t2;
+                const selected = (val === 1 ? t1 : t2);
                 
                 const updatedAnswers = {
                     ...answers,
@@ -130,7 +126,7 @@
                 if (currentIdx < questions.length - 1) {
                     setCurrentIdx(currentIdx + 1);
                 } else {
-                    // 마지막 질문인 경우 결과 도출 (비동기 상태 대신 업데이트된 값 직접 전달)
+                    // 마지막 20번째 답변이 포함된 점수로 결과 계산 시작
                     processFinish(updatedAnswers);
                 }
             };
@@ -146,7 +142,7 @@
             const processFinish = async (finalAnswers) => {
                 setStep('loading');
                 
-                // MBTI 최종 결정 로직 (동점 시 순서대로 E, S, T, J 우선)
+                // MBTI 문자열 생성 (동점 시 E, S, T, J 우선순위)
                 let res = '';
                 res += (finalAnswers.E >= finalAnswers.I) ? 'E' : 'I';
                 res += (finalAnswers.S >= finalAnswers.N) ? 'S' : 'N';
@@ -177,7 +173,7 @@
                             body: JSON.stringify({ instances: { prompt: prompt }, parameters: { sampleCount: 1 } })
                         });
                         
-                        if (!response.ok) throw new Error("API 요청 실패");
+                        if (!response.ok) throw new Error("Network Response Fail");
                         
                         const result = await response.json();
                         if (result.predictions?.[0]) {
@@ -185,7 +181,7 @@
                             setIsGenerating(false);
                             return;
                         }
-                        throw new Error("이미지 데이터 없음");
+                        throw new Error("No Prediction Data");
                     } catch (e) {
                         retries++;
                         await new Promise(r => setTimeout(r, 1500));
@@ -224,8 +220,8 @@
                                     </div>
                                 </div>
                                 <div className="space-y-4 px-4 text-center">
-                                    <h2 className="text-4xl font-black text-slate-900 leading-tight text-center">나와 닮은<br /><span className="text-indigo-600">성경 히어로</span> 찾기</h2>
-                                    <p className="text-slate-500 text-sm font-bold leading-relaxed text-center">디즈니 스타일로 탄생한 성경 주인공!<br />나의 일상으로 알아보는 신앙 캐릭터 테스트</p>
+                                    <h2 className="text-4xl font-black text-slate-900 leading-tight">나와 닮은<br /><span className="text-indigo-600">성경 히어로</span> 찾기</h2>
+                                    <p className="text-slate-500 text-sm font-bold leading-relaxed">디즈니 스타일로 탄생한 성경 주인공!<br />나의 일상으로 알아보는 신앙 캐릭터 테스트</p>
                                 </div>
                                 <button onClick={() => setStep('quiz')} className="w-full bg-indigo-600 text-white font-black py-6 rounded-3xl text-xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all">테스트 시작하기</button>
                                 <p className="text-[10px] text-slate-300 font-bold uppercase tracking-[0.3em]">Jesus Faith Church (Hapdong)</p>
@@ -244,7 +240,7 @@
                                     </div>
                                 </div>
                                 <div className="flex-1 flex flex-col justify-center space-y-10">
-                                    <h3 className="text-2xl font-black text-slate-800 text-center leading-tight break-keep">{questions[currentIdx].q}</h3>
+                                    <h3 className="text-2xl font-black text-slate-800 text-center leading-tight break-keep px-2">{questions[currentIdx].q}</h3>
                                     <div className="space-y-4">
                                         <button onClick={() => handleAnswer(questions[currentIdx].type, 1)} className="w-full p-6 bg-white border-4 border-slate-50 rounded-[2rem] text-slate-700 font-bold shadow-lg hover:border-indigo-600 active:scale-95 transition-all text-center">{questions[currentIdx].a1}</button>
                                         <button onClick={() => handleAnswer(questions[currentIdx].type, 2)} className="w-full p-6 bg-white border-4 border-slate-50 rounded-[2rem] text-slate-700 font-bold shadow-lg hover:border-indigo-600 active:scale-95 transition-all text-center">{questions[currentIdx].a2}</button>
@@ -270,9 +266,9 @@
                                         <div className="absolute inset-0 bg-indigo-50 rounded-[3rem] rotate-3 -z-10 shadow-xl"></div>
                                         <div className={`w-full h-full ${heroData[mbti]?.color || 'bg-slate-100'} rounded-[2.5rem] shadow-2xl overflow-hidden border-4 border-white flex items-center justify-center`}>
                                             {isGenerating ? (
-                                                <div className="w-full h-full flex flex-col items-center justify-center bg-slate-50 animate-pulse">
+                                                <div className="w-full h-full flex flex-col items-center justify-center bg-slate-50 animate-pulse text-center p-4">
                                                     <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-3"></div>
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter text-center">AI Rendering...</span>
+                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">AI Rendering...</span>
                                                 </div>
                                             ) : resultImg ? (
                                                 <img src={resultImg} className="w-full h-full object-cover" />
@@ -281,7 +277,7 @@
                                             )}
                                         </div>
                                     </div>
-                                    <p className="text-indigo-600 font-black text-sm tracking-[0.2em] uppercase mb-1 text-center">{heroData[mbti]?.title}</p>
+                                    <p className="text-indigo-600 font-black text-sm tracking-[0.2em] uppercase mb-1 text-center leading-none">{heroData[mbti]?.title}</p>
                                     <h1 className="text-5xl font-black text-slate-900 tracking-tighter text-center">{heroData[mbti]?.name}</h1>
                                 </div>
 
@@ -292,13 +288,13 @@
                                             <p className="text-slate-700 font-bold leading-relaxed text-sm text-center break-keep">{heroData[mbti]?.behavior}</p>
                                         </section>
                                         <div className="grid grid-cols-2 gap-4">
-                                            <section className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 text-center flex flex-col items-center">
+                                            <section className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 text-center flex flex-col items-center justify-center min-h-[100px]">
                                                 <h3 className="text-indigo-600 font-black text-[10px] mb-2 uppercase tracking-tighter">교회 페르소나</h3>
-                                                <p className="text-slate-800 font-black text-sm break-keep leading-tight text-center">{heroData[mbti]?.persona}</p>
+                                                <p className="text-slate-800 font-black text-sm break-keep leading-tight">{heroData[mbti]?.persona}</p>
                                             </section>
-                                            <section className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 text-center flex flex-col items-center">
+                                            <section className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 text-center flex flex-col items-center justify-center min-h-[100px]">
                                                 <h3 className="text-indigo-600 font-black text-[10px] mb-2 uppercase tracking-tighter">추천 직업</h3>
-                                                <p className="text-slate-800 font-black text-[10px] leading-tight break-keep text-center">{heroData[mbti]?.job}</p>
+                                                <p className="text-slate-800 font-black text-[10px] leading-tight break-keep">{heroData[mbti]?.job}</p>
                                             </section>
                                         </div>
                                         <div className="bg-indigo-900 text-white p-8 rounded-[3.5rem] relative shadow-2xl flex flex-col items-center">
@@ -329,7 +325,7 @@
                                         <button onClick={() => {
                                             const el = document.createElement('textarea'); el.value = window.location.href; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); setShowToast(true); setTimeout(() => setShowToast(false), 2000);
                                         }} className="w-full bg-indigo-600 text-white font-black py-6 rounded-[2.5rem] flex items-center justify-center gap-3 shadow-xl transform active:scale-95 transition-all text-lg text-center"><Icon name="share-2" className="w-6 h-6" /> 링크 복사해서 공유하기</button>
-                                        <button onClick={() => {setStep('start'); setCurrentIdx(0); setHistory([]); setResultImg("");}} className="w-full text-slate-400 font-bold py-4 flex items-center justify-center gap-2 text-sm hover:text-indigo-600 transition-colors text-center"><Icon name="rotate-ccw" className="w-4 h-4" /> 다시 처음부터 하기</button>
+                                        <button onClick={() => {setStep('start'); setCurrentIdx(0); setHistory([]); setResultImg(""); setAnswers({ E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 });}} className="w-full text-slate-400 font-bold py-4 flex items-center justify-center gap-2 text-sm hover:text-indigo-600 transition-colors text-center"><Icon name="rotate-ccw" className="w-4 h-4" /> 다시 처음부터 하기</button>
                                     </div>
                                 </div>
                             </div>

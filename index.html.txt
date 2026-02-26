@@ -1,0 +1,391 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  ChevronRight, ChevronLeft, RotateCcw, Share2, 
+  MapPin, Phone, Clock, Quote, User, ClipboardCheck, 
+  Navigation2, Briefcase, Heart, Sparkles, Map, Camera
+} from 'lucide-react';
+
+const apiKey = ""; // The execution environment provides the key at runtime.
+
+// 예장합동 공식 로고 (SVG)
+const HapdongLogo = () => (
+  <svg width="32" height="40" viewBox="0 0 100 130" className="mr-3 filter drop-shadow-sm">
+    <path d="M15 15 L50 25 L50 115 L15 125 Z" fill="#00ADEF" /> 
+    <path d="M85 15 L50 25 L50 115 L90 125 Z" fill="#77BC1F" /> 
+    <rect x="46" y="35" width="8" height="70" fill="white" /> 
+    <rect x="25" y="55" width="50" height="8" fill="white" /> 
+  </svg>
+);
+
+// 16가지 MBTI 데이터
+const heroData = {
+  'ISTJ': { name: '모세', title: '빈틈없는 설계자', persona: '교회의 브레인 행정관', job: '회계사, 공무원, 물류 전문가', behavior: '계획이 틀어지는 것을 싫어하며, 맡은 일은 끝까지 완수하는 책임감의 정석', verse: '너희는 가만히 있어 여호와께서 오늘 너희를 위하여 행하시는 구원을 보라 (출 14:13)', prompt: "A 3D Disney-Pixar style character of Moses holding stone tablets, wise elderly man with a kind face and long grey beard, wearing a humble robe, soft cinematic lighting, vibrant colors." },
+  'ISFJ': { name: '룻', title: '신실한 조력자', persona: '따뜻한 힐링 멘토', job: '사회복지사, 간호사, 교사', behavior: '겸손하고 인내심이 강하며, 주변 사람들을 조용히 채워주는 든든한 조력자', verse: '어머니께서 가시는 곳에 나도 가고 어머니께서 머무시는 곳에서 나도 머물겠나이다 (룻 1:16)', prompt: "A 3D Disney-Pixar style character of Ruth holding a bundle of grain, young woman with a loyal and gentle expression, wearing simple historical dress, warm sunset lighting, highly detailed." },
+  'INFJ': { name: '예레미야', title: '통찰력 있는 중보자', persona: '신비로운 고민 상담가', job: '상담가, 작가, 예술가', behavior: '세상을 향한 깊은 공감 능력을 가졌으며, 보이지 않는 가치와 본질을 중요하게 생각함', verse: '나의 마음이 불붙는 것 같아서 답답하여 견딜 수 없나이다 (렘 20:9)', prompt: "A 3D Disney-Pixar style character of Jeremiah the prophet, deep thoughtful expression, slightly melancholy but hopeful eyes, wearing a simple cloak, soft atmospheric lighting." },
+  'INTJ': { name: '다니엘', title: '단단한 믿음의 전략가', persona: '스마트한 청년 리더', job: '연구원, 전략 기획자, 데이터 분석가', behavior: '지적 호기심이 많고 독립적이며, 어떤 유혹 앞에서도 원칙을 굽히지 않는 강단이 있음', verse: '다니엘이 뜻을 정하여 왕의 음식으로 자기를 더럽히지 아니하리라 (단 1:8)', prompt: "A 3D Disney-Pixar style character of Daniel in Babylon, young man with a determined and intelligent look, holding a scroll, elegant ancient royal setting in background, cinematic 3D render." },
+  'ISTP': { name: '기드온', title: '실천적인 해결사', persona: '교회의 츤데레 맥가이버', job: '기술자, 개발자, 파일럿', behavior: '과묵해 보이지만 위기의 순간 가장 효율적인 해결책을 찾아내는 능력자', verse: '큰 용사여 여호와께서 너와 함께 계시도다 (삿 6:12)', prompt: "A 3D Disney-Pixar style character of Gideon holding a trumpet and a torch, brave and practical expression, wearing light ancient armor, dynamic lighting." },
+  'ISFP': { name: '마리아', title: '순수한 예술 예배자', persona: '감성 충만 성가대 누나', job: '디자이너, 화가, 음악가', behavior: '온유하고 수용적이며, 자신의 진심을 담아 가장 가치 있는 것을 아낌없이 헌신함', verse: '주의 여종이오니 말씀대로 내게 이루어지이다 (눅 1:38)', prompt: "A 3D Disney-Pixar style character of Mary the mother of Jesus, young woman with a radiant and peaceful smile, gentle eyes, soft glow, divine and warm atmosphere." },
+  'INFP': { name: '사도요한', title: '사랑의 낭만주의자', persona: '평화로운 교회 오빠', job: '콘텐츠 제작자, 작가, 비영리 활동가', behavior: '내면 세계가 따뜻하며, 갈등을 싫어하고 모든 사람이 사랑으로 하나 되길 꿈꿈', verse: '사랑하는 자들아 우리가 서로 사랑하자 사랑은 하나님께 속한 것이니 (요일 4:7)', prompt: "A 3D Disney-Pixar style character of Apostle John, young man with a gentle and loving face, looking up at the sky, soft heavenly lighting, serene background." },
+  'INTP': { name: '솔로몬', title: '지혜로운 탐구자', persona: '걸어다니는 교회 백과사전', job: '학자, 철학자, 전략 컨설턴트', behavior: '아이디어가 끊이지 않으며, 복잡한 세상을 자신만의 논리로 명쾌하게 정리함', verse: '여호와를 경외하는 것이 지식의 근본이어늘 (잠 1:7)', prompt: "A 3D Disney-Pixar style character of King Solomon, wearing a golden crown, wise and curious expression, surrounded by scrolls and books, rich royal colors." },
+  'ESTP': { name: '삼손', title: '에너지 넘치는 액션스타', persona: '활동적인 청년부 에이스', job: '운동선수, 영업직, 소방관', behavior: '두려움 없는 도전 정신과 넘치는 자신감으로 현장을 누비는 스타일', verse: '주 여호와여 구옵나니 나를 생각하옵소서... 이번만 나를 강하게 하사 (삿 16:28)', prompt: "A 3D Disney-Pixar style character of Samson, very strong and muscular man, confident smile, long hair, hero-like pose, vibrant and energetic lighting." },
+  'ESFP': { name: '다윗', title: '무대 위의 찬양가', persona: '교회 최고의 스타 플레이어', job: '연예인, 마케터, 레크리에이션 강사', behavior: '낙천적이고 사교적이며, 주변을 즐겁게 만드는 탁월한 재능과 예술성을 가짐', verse: '다윗이 여호와 앞에서 힘을 다하여 춤을 추는데 (삼하 6:14)', prompt: "A 3D Disney-Pixar style character of young David playing a harp, joyful expression, curly hair, sunny shepherd's field in background, charming and friendly look." },
+  'ENFP': { name: '베드로', title: '열정적인 선구자', persona: '분위기 메이커 전도 대장', job: 'PD, 가이드, 자유 기고자', behavior: '풍부한 감수성과 열정을 가졌으며, 새로운 일에 뛰어드는 것을 두려워하지 않음', verse: '주는 그리스도시요 살아 계신 하나님의 아들이시니이다 (마 16:16)', prompt: "A 3D Disney-Pixar style character of Peter the Apostle, energetic and bold expression, fisherman clothes, near a blue sea, bright and inspiring atmosphere." },
+  'ENTP': { name: '야곱', title: '영리한 아이디어 뱅크', persona: '재치 만점 교회 청년', job: '발명가, 기획자, 변호사', behavior: '임기응변이 뛰어나고 논쟁을 즐기며, 기발한 방식으로 난관을 극복함', verse: '내게 축복하지 아니하면 가게 하지 아니하겠나이다 (창 32:26)', prompt: "A 3D Disney-Pixar style character of Jacob, clever and witty expression, adventurous look, holding a staff, dynamic and colorful setting." },
+  'ESTJ': { name: '느헤미야', title: '강인한 실행 리더', persona: '든든한 청년부 회장님', job: '경영자, 경찰, 군인', behavior: '질서와 규칙을 중요시하며, 목표를 향해 조직을 체계적으로 이끄는 카리스마', verse: '강하고 담대하라 두려워하지 말며 놀라지 말라 네가 어디로 가든지 (수 1:9)', prompt: "A 3D Disney-Pixar style character of Nehemiah inspecting a wall, strong leader stance, organized and determined look, cinematic construction site background." },
+  'ESFJ': { name: '마르다', title: '친절한 수호자', persona: '다정다감한 교회 언니', job: '호텔리어, 서비스 매니저, 교사', behavior: '사람들을 섬기는 것에 기쁨을 느끼며, 공동체의 화합을 위해 솔선수범함', verse: '마르다는 준비하는 일이 많아 마음이 분주한지라 (눅 10:40)', prompt: "A 3D Disney-Pixar style character of Martha holding a tray of food, friendly and caring smile, wearing a neat apron, warm and inviting kitchen background." },
+  'ENFJ': { name: '요셉', title: '비전 있는 중재자', persona: '차세대 글로벌 리더', job: '외교관, 인사관리자, 팀장', behavior: '공동체의 미래를 내다보는 통찰력이 있으며, 따뜻한 리더십으로 사람을 모음', verse: '하나님은 그것을 선으로 바꾸사 오늘과 같이 많은 백성을 구원하게 (창 50:20)', prompt: "A 3D Disney-Pixar style character of Joseph wearing a colorful coat, visionary and kind eyes, confident and noble posture, Egyptian elements in background." },
+  'ENTJ': { name: '사도바울', title: '담대한 전략 리더', persona: '프런티어 선교 열정가', job: 'CEO, 정치 지도자, 법률가', behavior: '단호하고 추진력이 강하며, 비전을 현실로 만들기 위해 삶 전체를 던짐', verse: '나의 달려갈 길과 주 예수께 받은 사명을 마치려 함에는... (행 20:24)', prompt: "A 3D Disney-Pixar style character of Apostle Paul writing a letter, authoritative and focused look, traveling gear in background, dramatic lighting, heroic feel." }
+};
+
+const questions = [
+  { id: 1, type: 'EI', q: "주말 휴일, 당신의 충전 방식은?", a1: "왁자지껄 친구들과 만나 수다 떨며 에너지를 얻는다", a2: "조용히 집에서 나만의 시간을 즐기며 에너지를 충전한다" },
+  { id: 2, type: 'SN', q: "여행 계획을 세울 때 당신은?", a1: "가야 할 장소와 시간을 꼼꼼하게 메모해둔다", a2: "큰 가닥만 잡고 가서 끌리는 곳으로 향한다" },
+  { id: 3, type: 'TF', q: "친구가 고민을 털어놓는다면?", a1: "해결책이 뭔지 같이 고민하고 현실적으로 조언한다", a2: "충분히 공감해주고 친구의 마음을 먼저 다독인다" },
+  { id: 4, type: 'JP', q: "방 청소를 하려고 마음먹었다면?", a1: "어디부터 어디까지 치울지 딱 정해서 한 번에 끝낸다", a2: "치우다가 옛날 물건이 나오면 구경하느라 멈춘다" },
+  { id: 5, type: 'EI', q: "모임에서 대화가 끊겼을 때 나는?", a1: "어색함을 못 참고 아무 말이나 던지며 분위기를 띄운다", a2: "누군가 대화를 시작할 때까지 가만히 기다린다" },
+  { id: 6, type: 'SN', q: "물건을 새로 샀을 때?", a1: "설명서를 1번부터 차례대로 정독한다", a2: "일단 전원을 켜고 이것저것 눌러보며 감으로 익힌다" },
+  { id: 7, type: 'TF', q: "다른 사람의 실수를 지적해야 한다면?", a1: "잘못된 부분을 명확하고 논리적으로 설명해준다", a2: "상대방이 상처받지 않게 최대한 부드럽게 말한다" },
+  { id: 8, type: 'JP', q: "나의 가방이나 책상 상태는?", a1: "물건들이 제자리에 정리되어 있어야 마음이 편하다", a2: "어질러진 것 같지만 나름대로 다 찾을 수 있다" },
+  { id: 9, type: 'EI', q: "내가 생각하는 진정한 힐링은?", a1: "즐거운 파티나 모임에서 실껏 웃고 노는 것", a2: "조용한 카페에서 책을 읽거나 좋아하는 음악을 듣는 것" },
+  { id: 10, type: 'SN', q: "설명을 들을 때 나는?", a1: "실제로 겪은 사실과 구체적인 사례를 선호한다", a2: "비유나 상징을 섞은 전체적인 느낌을 선호한다" },
+  { id: 11, type: 'TF', q: "친구에게 감동을 받는 순간은?", a1: "나의 문제를 해결할 수 있는 똑똑한 제안을 해줄 때", a2: "나의 슬픔을 자기 일처럼 생각하고 위로해줄 때" },
+  { id: 12, type: 'JP', q: "마감 기한이 정해진 일을 할 때?", a1: "미리미리 계획을 세워 여유 있게 끝내는 편이다", a2: "마지막에 집중력을 폭발시켜 한꺼번에 끝내는 편이다" },
+  { id: 13, type: 'EI', q: "내가 생각하는 나의 평소 모습은?", a1: "활동적이고 먼저 다가가는 인싸형", a2: "신중하고 차분하게 지켜보는 아싸형" },
+  { id: 14, type: 'SN', q: "하늘의 구름을 보면 드는 생각은?", a1: "비가 오려나? 우산을 챙겨야겠다", a2: "강아지 모양 같아! 저 구름은 어디로 갈까?" },
+  { id: 15, type: 'TF', q: "슬픈 영화를 볼 때 나는?", a1: "줄거리의 개연성이나 연출의 완성도를 평가한다", a2: "주인공의 감정에 이입해서 어느새 울고 있다" },
+  { id: 16, type: 'JP', q: "약속 시간 10분 전, 나는?", a1: "이미 도착했거나 약속 장소 근처에 있다", a2: "이제 막 준비를 끝냈거나 부지런히 서두르고 있다" },
+  { id: 17, type: 'EI', q: "나의 감정 표현은?", a1: "솔직하고 풍부하게 밖으로 잘 드러낸다", a2: "내면에서 정리하고 겉으로는 잘 드러내지 않는다" },
+  { id: 18, type: 'SN', q: "미래에 대해 생각할 때?", a1: "당장 내일이나 이번 달의 구체적인 계획이 즐겁다", a2: "먼 미래의 꿈이나 막연한 비전 상상이 즐겁다" },
+  { id: 19, type: 'TF', q: "나를 더 기쁘게 하는 칭찬은?", a1: "너 진짜 똑똑하다! 일 처리 완벽하네", a2: "너는 정말 마음이 따뜻한 사람이야, 고마워" },
+  { id: 20, type: 'JP', q: "나의 생활 스타일은?", a1: "체계적이고 안정적인 루틴을 선호한다", a2: "자유롭고 매일 새로운 자극이 있는 게 좋다" }
+];
+
+const App = () => {
+  const [step, setStep] = useState('start');
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [answers, setAnswers] = useState({ E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 });
+  const [mbti, setMbti] = useState('');
+  const [resultImg, setResultImg] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
+  const handleAnswer = (type, val) => {
+    const t1 = type[0], t2 = type[1];
+    setHistory([...history, { idx: currentIdx, answers: { ...answers } }]);
+    setAnswers(prev => ({ ...prev, [val === 1 ? t1 : t2]: prev[val === 1 ? t1 : t2] + 1 }));
+
+    if (currentIdx < questions.length - 1) {
+      setCurrentIdx(currentIdx + 1);
+    } else {
+      finish();
+    }
+  };
+
+  const handleBack = () => {
+    if (history.length === 0) return;
+    const last = history[history.length - 1];
+    setCurrentIdx(last.idx);
+    setAnswers(last.answers);
+    setHistory(history.slice(0, -1));
+  };
+
+  const finish = async () => {
+    setStep('loading');
+    let res = '';
+    res += answers.E >= answers.I ? 'E' : 'I';
+    res += answers.S >= answers.N ? 'S' : 'N';
+    res += answers.T >= answers.F ? 'T' : 'F';
+    res += answers.J >= answers.P ? 'J' : 'P';
+    setMbti(res);
+
+    await generateCharacterImage(res);
+    setStep('result');
+  };
+
+  const generateCharacterImage = async (mbtiType) => {
+    setIsGenerating(true);
+    const hero = heroData[mbtiType];
+    const prompt = hero.prompt;
+
+    let retries = 0;
+    while (retries < 5) {
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ instances: { prompt: prompt }, parameters: { sampleCount: 1 } })
+        });
+        const result = await response.json();
+        const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+        setResultImg(imageUrl);
+        setIsGenerating(false);
+        return;
+      } catch (error) {
+        retries++;
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 1000));
+      }
+    }
+    setResultImg(""); // Fallback if all retries fail
+    setIsGenerating(false);
+  };
+
+  const copyUrl = () => {
+    const el = document.createElement('textarea');
+    el.value = window.location.href;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
+  const progress = ((currentIdx + 1) / questions.length) * 100;
+
+  return (
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center font-sans selection:bg-indigo-100">
+      <div className="w-full max-w-md bg-white min-h-screen md:min-h-[95vh] shadow-2xl flex flex-col relative overflow-hidden md:rounded-[3rem] border-4 border-slate-200">
+        
+        {/* Header - 용인 마북 예수믿음교회 */}
+        <header className="bg-white px-6 py-5 flex items-center shrink-0 border-b-2 border-slate-50 z-20">
+          <HapdongLogo />
+          <div>
+            <h1 className="text-xl font-black text-slate-800 tracking-tighter">예수믿음교회</h1>
+            <p className="text-[10px] font-bold text-indigo-500 tracking-[0.2em] uppercase">Yongin Mabuk</p>
+          </div>
+          {step === 'quiz' && (
+            <button 
+              onClick={handleBack} 
+              className="ml-auto text-xs font-black text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full flex items-center hover:bg-slate-200 transition-colors"
+            >
+              <ChevronLeft className="w-3 h-3 mr-1" /> BACK
+            </button>
+          )}
+        </header>
+
+        {step === 'start' && (
+          <div className="flex-1 flex flex-col items-center justify-center p-10 text-center space-y-12 animate-in fade-in duration-500">
+            <div className="relative">
+              <div className="w-40 h-40 bg-indigo-600 rounded-[3rem] rotate-6 flex items-center justify-center shadow-2xl">
+                 <User className="w-20 h-20 text-white -rotate-6" />
+              </div>
+              <div className="absolute -bottom-2 -right-4 bg-yellow-400 p-4 rounded-3xl shadow-lg border-4 border-white animate-bounce">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-4xl font-black text-slate-900 leading-tight">
+                나와 닮은<br /><span className="text-indigo-600">성경 히어로</span> 찾기
+              </h2>
+              <p className="text-slate-500 text-sm font-bold leading-relaxed px-4">
+                디즈니 스타일로 탄생한 성경 주인공!<br />
+                나의 일상으로 알아보는 신앙 캐릭터 테스트
+              </p>
+            </div>
+
+            <button 
+              onClick={() => setStep('quiz')}
+              className="w-full bg-indigo-600 text-white font-black py-6 rounded-3xl text-xl shadow-xl shadow-indigo-100 hover:scale-[1.02] active:scale-95 transition-all"
+            >
+              테스트 시작하기
+            </button>
+          </div>
+        )}
+
+        {step === 'quiz' && (
+          <div className="flex-1 flex flex-col p-8 space-y-12 animate-in fade-in duration-300">
+            <div>
+              <div className="flex justify-between items-end mb-3">
+                <span className="text-3xl font-black text-indigo-600 italic tracking-tighter">STEP {currentIdx + 1}</span>
+                <span className="text-xs font-black text-slate-300">{currentIdx + 1} / 20</span>
+              </div>
+              <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-indigo-600 transition-all duration-300 ease-out" 
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="flex-1 flex flex-col justify-center space-y-10">
+              <h3 className="text-2xl font-black text-slate-800 text-center leading-tight break-keep px-2">
+                {questions[currentIdx].q}
+              </h3>
+              
+              <div className="space-y-4">
+                <button 
+                  onClick={() => handleAnswer(questions[currentIdx].type, 1)}
+                  className="w-full p-6 bg-white border-4 border-slate-50 rounded-[2rem] text-slate-700 font-bold shadow-lg hover:border-indigo-600 hover:bg-indigo-50 transition-all active:scale-95 text-lg"
+                >
+                  {questions[currentIdx].a1}
+                </button>
+                <button 
+                  onClick={() => handleAnswer(questions[currentIdx].type, 2)}
+                  className="w-full p-6 bg-white border-4 border-slate-50 rounded-[2rem] text-slate-700 font-bold shadow-lg hover:border-indigo-600 hover:bg-indigo-50 transition-all active:scale-95 text-lg"
+                >
+                  {questions[currentIdx].a2}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {step === 'loading' && (
+          <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-8">
+            <div className="w-20 h-20 border-[6px] border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
+            <div className="text-center">
+              <p className="font-black text-2xl text-slate-800">성경 히어로를 소환 중...</p>
+              <p className="text-slate-400 font-bold mt-2">당신의 3D 캐릭터가 그려지고 있어요!</p>
+            </div>
+          </div>
+        )}
+
+        {step === 'result' && (
+          <div className="flex-1 flex flex-col overflow-y-auto animate-in fade-in slide-in-from-bottom-12 duration-700 pb-12">
+            {/* 결과 이미지 영역 */}
+            <div className="p-8 text-center">
+              <div className="relative w-64 h-64 mx-auto mb-6">
+                <div className="absolute inset-0 bg-indigo-100 rounded-[3rem] rotate-3 -z-10 shadow-xl"></div>
+                <div className="w-full h-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-4 border-white">
+                  {isGenerating ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-slate-50 animate-pulse">
+                      <Camera className="w-12 h-12 text-slate-300 mb-2" />
+                      <span className="text-[10px] font-bold text-slate-400">이미지 그리는 중...</span>
+                    </div>
+                  ) : (
+                    resultImg ? (
+                      <img src={resultImg} alt={heroData[mbti].name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                        <User className="w-20 h-20 text-slate-300" />
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+              <p className="text-indigo-600 font-black text-sm tracking-[0.2em] uppercase mb-1">{heroData[mbti].title}</p>
+              <h1 className="text-5xl font-black text-slate-900 tracking-tighter">{heroData[mbti].name}</h1>
+            </div>
+
+            <div className="px-8 space-y-12">
+              {/* 성격 분석 섹션 */}
+              <div className="space-y-6">
+                <section className="bg-slate-50 p-8 rounded-[3rem] border border-slate-100 shadow-inner">
+                  <h3 className="flex items-center gap-2 text-indigo-600 font-black text-xs mb-3">
+                    <Heart className="w-4 h-4 fill-current" /> 행동 범위 유형
+                  </h3>
+                  <p className="text-slate-700 font-bold leading-relaxed text-sm">{heroData[mbti].behavior}</p>
+                </section>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <section className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 flex flex-col items-center text-center">
+                    <h3 className="flex items-center gap-2 text-indigo-600 font-black text-[10px] mb-2 uppercase tracking-tighter">
+                      <Sparkles className="w-3 h-3 fill-current" /> 교회 페르소나
+                    </h3>
+                    <p className="text-slate-800 font-black text-sm">{heroData[mbti].persona}</p>
+                  </section>
+                  <section className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 flex flex-col items-center text-center">
+                    <h3 className="flex items-center gap-2 text-indigo-600 font-black text-[10px] mb-2 uppercase tracking-tighter">
+                      <Briefcase className="w-3 h-3 fill-current" /> 추천 직업
+                    </h3>
+                    <p className="text-slate-800 font-black text-[10px] leading-tight">{heroData[mbti].job}</p>
+                  </section>
+                </div>
+
+                <div className="bg-indigo-900 text-white p-8 rounded-[3.5rem] relative overflow-hidden shadow-2xl">
+                  <Quote className="w-10 h-10 text-white/10 absolute -top-2 -left-2" />
+                  <p className="text-lg font-bold italic leading-relaxed mb-4 relative z-10 text-center">"{heroData[mbti].verse}"</p>
+                  <div className="h-1 w-12 bg-indigo-400 rounded-full mb-2 mx-auto" />
+                  <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest text-center italic opacity-60">A Message for You</p>
+                </div>
+              </div>
+
+              {/* 교회 정보 - 마북동 LG자이 상가 */}
+              <div className="bg-white border-4 border-slate-900 rounded-[4rem] p-10 space-y-10 shadow-2xl relative overflow-hidden">
+                <div className="flex items-center gap-3">
+                  <HapdongLogo />
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tighter">예수믿음교회</h2>
+                </div>
+
+                <div className="space-y-8">
+                  <div className="flex gap-5">
+                    <div className="w-12 h-12 bg-slate-900 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                      <MapPin className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-indigo-600 uppercase mb-1 tracking-widest">ADDRESS</p>
+                      <p className="text-xs font-bold leading-relaxed text-slate-800">
+                        도로명: 경기 용인시 기흥구 마북로154번길 9<br />
+                        지번: 경기 용인시 기흥구 마북동 617<br />
+                        <span className="opacity-50 font-medium">(교동마을 LG자이 상가 2층)</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-5">
+                    <div className="flex gap-5 items-center">
+                      <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center shrink-0">
+                        <Phone className="w-5 h-5 text-indigo-600" />
+                      </div>
+                      <p className="text-sm font-black text-slate-700 tracking-wider">031-258-8291</p>
+                    </div>
+                    <div className="flex gap-5 items-center">
+                      <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center shrink-0">
+                        <Clock className="w-5 h-5 text-indigo-600" />
+                      </div>
+                      <p className="text-[10px] font-bold text-slate-700">주일 예배: 오전 11:00 / 오후 1:30</p>
+                    </div>
+                  </div>
+
+                  <a 
+                    href="https://naver.me/FG79ACXd" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full bg-slate-900 text-white font-black py-5 rounded-[2rem] flex items-center justify-center gap-3 shadow-lg hover:bg-indigo-600 transition-all active:scale-95"
+                  >
+                    <Navigation2 className="w-5 h-5 fill-current" />
+                    네이버 지도로 길찾기
+                  </a>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4 pb-10">
+                <button 
+                  onClick={copyUrl}
+                  className="w-full bg-indigo-600 text-white font-black py-6 rounded-[2.5rem] flex items-center justify-center gap-3 shadow-xl transform active:scale-95 transition-all text-lg"
+                >
+                  <Share2 className="w-6 h-6" />
+                  링크 복사해서 공유하기
+                </button>
+                <button 
+                  onClick={() => {
+                    setStep('start');
+                    setCurrentIdx(0);
+                    setHistory([]);
+                    setResultImg("");
+                  }}
+                  className="w-full text-slate-400 font-bold py-4 flex items-center justify-center gap-2 text-sm hover:text-indigo-600 transition-colors"
+                >
+                  <RotateCcw className="w-4 h-4" /> 다시 처음부터 하기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Toast 알림 */}
+        {showToast && (
+          <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300 z-50">
+            <ClipboardCheck className="w-5 h-5 text-green-400" />
+            <span className="text-sm font-black tracking-tight">링크가 복사되었습니다!</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default App;
+
